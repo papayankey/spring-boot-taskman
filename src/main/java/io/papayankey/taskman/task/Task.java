@@ -10,12 +10,16 @@ import java.time.LocalDateTime;
 public class Task {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer Id;
 
     @NotNull
-    @Column(name = "desc")
+    @Column(name = "description")
     private String description;
+
+    @NotNull
+    @Column(name = "completed")
+    private Boolean completed;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -26,10 +30,9 @@ public class Task {
     public Task() {
     }
 
-    public Task(String description, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Task(String description, Boolean completed) {
         this.description = description;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.completed = completed;
     }
 
     @PrePersist
@@ -54,6 +57,14 @@ public class Task {
         this.description = description;
     }
 
+    public Boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(Boolean completed) {
+        this.completed = completed;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -68,15 +79,5 @@ public class Task {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
-    }
-
-    @Override
-    public String toString() {
-        return "Task{" +
-                "Id=" + Id +
-                ", description='" + description + '\'' +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                '}';
     }
 }

@@ -38,7 +38,7 @@ public class TaskController {
         taskService.deleteTask(Integer.parseInt(id));
     }
 
-    @PutMapping(path = "{id}")
+    @PutMapping(path = "/{id}")
     public void updateTask(@PathVariable Integer id, @RequestBody TaskDto taskDto) {
         taskService.updateTask(id, taskDto);
     }

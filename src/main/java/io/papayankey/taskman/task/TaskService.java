@@ -1,8 +1,10 @@
 package io.papayankey.taskman.task;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,5 +35,17 @@ public class TaskService {
 
     public void deleteTask(Integer id) {
         taskRepository.deleteById(id);
+    }
+
+    public void updateTask(Integer id, TaskDto taskDto) {
+        Optional<Task> optionalTask = taskRepository.findById(id);
+        if (optionalTask.isPresent()) {
+           Task task = optionalTask.get();
+           task.setDescription(taskDto.getDescription());
+           task.setCompleted(taskDto.isCompleted());
+           task.setUpdatedAt(LocalDateTime.now());
+
+           taskRepository.save(task);
+        }
     }
 }

@@ -23,15 +23,15 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
-    public Optional<Task> getTask(int id) {
+    public Optional<Task> getTask(Integer id) {
         return taskRepository.findById(id);
     }
 
-    public List<Task> getActiveTasks() {
-        return taskRepository.findByCompleted(false);
+    public List<Task> getTasksByCompleted(Boolean completed) {
+        return taskRepository.findByCompleted(completed);
     }
 
-    public List<Task> getCompletedTasks() {
-        return taskRepository.findByCompleted(true);
+    public void deleteTask(Integer id) {
+        taskRepository.deleteById(id);
     }
 }

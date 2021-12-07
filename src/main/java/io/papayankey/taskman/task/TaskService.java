@@ -34,19 +34,23 @@ public class TaskService {
         return taskRepository.findByCompleted(completed);
     }
 
-    public void deleteTask(Integer id) {
-        taskRepository.deleteById(id);
+    public Optional<Task> deleteTask(Integer id) {
+        Optional<Task> task = getTask(id);
+        if (task.isPresent()) {
+            taskRepository.deleteById(id);
+        }
+        return task;
     }
 
-    public void updateTask(Integer id, TaskDto taskDto) {
+    public Optional<Task> updateTask(Integer id, TaskDto taskDto) {
         Optional<Task> optionalTask = taskRepository.findById(id);
         if (optionalTask.isPresent()) {
            Task task = optionalTask.get();
            task.setDescription(taskDto.getDescription());
            task.setCompleted(taskDto.isCompleted());
            task.setUpdatedAt(LocalDateTime.now());
-
            taskRepository.save(task);
         }
+        return optionalTask;
     }
 }

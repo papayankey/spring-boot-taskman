@@ -1,6 +1,8 @@
 package io.papayankey.taskman.task;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,23 +26,36 @@ public class TaskController {
     }
 
     @GetMapping(path = "/{id}")
-    public Optional<Task> getTask(@PathVariable String id) {
-        return taskService.getTask(Integer.parseInt(id));
+    public ResponseEntity<Task> getTask(@PathVariable String id) {
+        Optional<Task> task = taskService.getTask(Integer.parseInt(id));
+        if (task.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(task.get(), HttpStatus.OK);
     }
 
     @PostMapping
-    public Task createTask(@RequestBody TaskDto taskDto) {
-        return taskService.createTask(taskDto);
+    public ResponseEntity<Task> createTask(@RequestBody TaskDto taskDto) {
+        Task task = taskService.createTask(taskDto);
+        return new ResponseEntity<>(task, HttpStatus.CREATED);
     }
 
     @DeleteMapping(path = "/{id}")
-    public void deleteTask(@PathVariable String id) {
-        taskService.deleteTask(Integer.parseInt(id));
+    public ResponseEntity<Task> deleteTask(@PathVariable String id) {
+        Optional<Task> task = taskService.deleteTask(Integer.parseInt(id));
+        if (task.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(task.get(), HttpStatus.ACCEPTED);
     }
 
     @PutMapping(path = "/{id}")
-    public void updateTask(@PathVariable Integer id, @RequestBody TaskDto taskDto) {
-        taskService.updateTask(id, taskDto);
+    public ResponseEntity<Task> updateTask(@PathVariable Integer id, @RequestBody TaskDto taskDto) {
+        Optional<Task> task = taskService.updateTask(id, taskDto);
+        if (task.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

@@ -36,9 +36,14 @@ public class Task {
     }
 
     @PrePersist
-    private void prePopulateDates() {
+    private void prePersis() {
         createdAt = LocalDateTime.now();
         updatedAt = createdAt;
+    }
+
+    @PreUpdate
+    private void preUpdate() {
+        updatedAt = LocalDateTime.now();
     }
 
     public Integer getId() {

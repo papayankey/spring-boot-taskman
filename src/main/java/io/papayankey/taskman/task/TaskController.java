@@ -1,5 +1,7 @@
 package io.papayankey.taskman.task;
 
+import io.papayankey.taskman.exceptions.CustomResponse;
+import io.papayankey.taskman.exceptions.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,46 +18,60 @@ public class TaskController {
     private TaskService taskService;
 
     @GetMapping
-    public List<Task> getTasks() {
-        return taskService.getTasks();
+    public ResponseEntity<CustomResponse> getTasks() {
+       List<Task> tasks = taskService.getTasks();
+       return ResponseHandler.builder()
+               .message("Ok")
+               .status(HttpStatus.OK)
+               .data(tasks)
+               .build();
     }
 
     @GetMapping(path = "/tasks-status")
-    public List<Task> getTasksByCompleted(@RequestParam String completed) {
-        return taskService.getTasksByCompleted(Boolean.parseBoolean(completed));
+    public ResponseEntity<CustomResponse> getTasksByCompleted(@RequestParam String completed) {
+        List<Task> tasksByCompleted = taskService.getTasksByCompleted(Boolean.parseBoolean(completed));
+        return ResponseHandler.builder()
+                .message("Ok")
+                .status(HttpStatus.OK)
+                .data(tasksByCompleted)
+                .build();
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<Task> getTask(@PathVariable String id) {
-        Optional<Task> task = taskService.getTask(Integer.parseInt(id));
-        if (task.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(task.get(), HttpStatus.OK);
+    public ResponseEntity<CustomResponse> getTask(@PathVariable String id) {
+        Task task = taskService.getTask(Integer.parseInt(id));
+        return ResponseHandler.builder()
+                .message("Ok")
+                .status(HttpStatus.OK)
+                .data(task)
+                .build();
     }
 
     @PostMapping
-    public ResponseEntity<Task> createTask(@RequestBody TaskDto taskDto) {
+    public ResponseEntity<CustomResponse> createTask(@RequestBody TaskDto taskDto) {
         Task task = taskService.createTask(taskDto);
-        return new ResponseEntity<>(task, HttpStatus.CREATED);
+        return ResponseHandler.builder()
+                .message("Task created")
+                .status(HttpStatus.CREATED)
+                .data(task)
+                .build();
     }
 
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<Task> deleteTask(@PathVariable String id) {
-        Optional<Task> task = taskService.deleteTask(Integer.parseInt(id));
-        if (task.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(task.get(), HttpStatus.ACCEPTED);
+    public ResponseEntity<CustomResponse> deleteTask(@PathVariable String id) {
+        Task task = taskService.deleteTask(Integer.parseInt(id));
+        return ResponseHandler.builder()
+                .message("Task deleted")
+                .status(HttpStatus.ACCEPTED)
+                .build();
     }
 
     @PutMapping(path = "/{id}")
-    public ResponseEntity<Task> updateTask(@PathVariable Integer id, @RequestBody TaskDto taskDto) {
-        Optional<Task> task = taskService.updateTask(id, taskDto);
-        if (task.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<CustomResponse> updateTask(@PathVariable int id, @RequestBody TaskDto taskDto) {
+        Task task = taskService.updateTask(id, taskDto);
+        return ResponseHandler.builder()
+                .status(HttpStatus.NO_CONTENT)
+                .build();
     }
 
 }

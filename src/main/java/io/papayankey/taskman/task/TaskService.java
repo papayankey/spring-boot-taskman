@@ -1,13 +1,11 @@
 package io.papayankey.taskman.task;
 
-import org.springframework.beans.BeanUtils;
+import io.papayankey.taskman.exceptions.TaskNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TaskService {
@@ -16,7 +14,7 @@ public class TaskService {
     private TaskRepository taskRepository;
 
     public List<Task> getTasks() {
-       return taskRepository.findAll();
+        return taskRepository.findAll();
     }
 
     public Task createTask(TaskDto taskDto) {
@@ -26,31 +24,26 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
-    public Optional<Task> getTask(Integer id) {
-        return taskRepository.findById(id);
+    public Task getTask(int id) {
+        return taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException(id));
     }
 
-    public List<Task> getTasksByCompleted(Boolean completed) {
+    public List<Task> getTasksByCompleted(boolean completed) {
         return taskRepository.findByCompleted(completed);
     }
 
-    public Optional<Task> deleteTask(Integer id) {
-        Optional<Task> task = getTask(id);
-        if (task.isPresent()) {
-            taskRepository.deleteById(id);
-        }
+    public Task deleteTask(int id) {
+        Task task = getTask(id);
+        taskRepository.deleteById(id);
         return task;
     }
 
-    public Optional<Task> updateTask(Integer id, TaskDto taskDto) {
-        Optional<Task> optionalTask = taskRepository.findById(id);
-        if (optionalTask.isPresent()) {
-           Task task = optionalTask.get();
-           task.setDescription(taskDto.getDescription());
-           task.setCompleted(taskDto.isCompleted());
-           task.setUpdatedAt(LocalDateTime.now());
-           taskRepository.save(task);
-        }
-        return optionalTask;
+    public Task updateTask(int id, TaskDto taskDto) {
+        Task task = getTask(id);
+        task.setDescription(taskDto.getDescription());
+        task.setCompleted(taskDto.isCompleted());
+        task.setUpdatedAt(LocalDateTime.now());
+
+        return taskRepository.save(task);
     }
 }

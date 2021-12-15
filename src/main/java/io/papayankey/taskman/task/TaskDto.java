@@ -1,24 +1,11 @@
 package io.papayankey.taskman.task;
 
+import lombok.Data;
+
+@Data
 public class TaskDto {
 
     private String description;
+    private boolean completed;
 
-    private Boolean completed;
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Boolean isCompleted() {
-        return completed;
-    }
-
-    public void setCompleted(Boolean completed) {
-        this.completed = completed;
-    }
 }

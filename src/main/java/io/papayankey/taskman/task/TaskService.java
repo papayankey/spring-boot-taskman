@@ -1,6 +1,6 @@
 package io.papayankey.taskman.task;
 
-import io.papayankey.taskman.exceptions.TaskNotFoundException;
+import io.papayankey.taskman.task.exceptions.TaskNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +17,7 @@ public class TaskService {
         return taskRepository.findAll();
     }
 
-    public Task createTask(TaskDto taskDto) {
-        Task task = new Task();
-        task.setDescription(taskDto.getDescription());
-        task.setCompleted(taskDto.isCompleted());
+    public Task createTask(Task task) {
         return taskRepository.save(task);
     }
 
@@ -38,12 +35,12 @@ public class TaskService {
         return task;
     }
 
-    public Task updateTask(int id, TaskDto taskDto) {
-        Task task = getTask(id);
-        task.setDescription(taskDto.getDescription());
-        task.setCompleted(taskDto.isCompleted());
-        task.setUpdatedAt(LocalDateTime.now());
+    public Task updateTask(int id, Task task) {
+        Task oldTask = getTask(id);
+        oldTask.setDescription(task.getDescription());
+        oldTask.setCompleted(task.isCompleted());
+        oldTask.setUpdatedAt(LocalDateTime.now());
 
-        return taskRepository.save(task);
+        return taskRepository.save(oldTask);
     }
 }

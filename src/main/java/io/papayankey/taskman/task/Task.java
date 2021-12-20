@@ -1,9 +1,13 @@
 package io.papayankey.taskman.task;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+<<<<<<< HEAD
 import lombok.NoArgsConstructor;
+=======
+>>>>>>> dev
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

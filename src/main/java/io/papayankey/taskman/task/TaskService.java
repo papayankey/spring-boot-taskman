@@ -38,7 +38,7 @@ public class TaskService {
     public Task updateTask(int id, Task task) {
         Task oldTask = getTask(id);
         oldTask.setDescription(task.getDescription());
-        oldTask.setCompleted(task.isCompleted());
+        oldTask.setCompleted(task.getCompleted());
         oldTask.setUpdatedAt(LocalDateTime.now());
 
         return taskRepository.save(oldTask);

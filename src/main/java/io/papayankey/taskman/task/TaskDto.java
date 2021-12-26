@@ -8,9 +8,9 @@ import java.time.LocalDateTime;
 @Data
 public class TaskDto {
 
-    private int Id;
+    private Integer Id;
     private String description;
-    private boolean completed;
+    private Boolean completed;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private LocalDateTime createdAt;

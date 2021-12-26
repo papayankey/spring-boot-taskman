@@ -26,7 +26,7 @@ public class TaskController {
         CustomResponse customResponse = CustomResponse.builder()
                 .message("OK")
                 .status(HttpStatus.OK)
-                .data(convertToListDto(tasks))
+                .data(completed != null ? convertToListDto(tasks) : null)
                 .build();
         return ResponseHandler.create(customResponse, HttpStatus.OK);
     }
@@ -47,10 +47,10 @@ public class TaskController {
         Task task = taskService.createTask(convertToEntity(taskDto));
         CustomResponse customResponse = CustomResponse.builder()
                 .message("Task create successful")
-                .status(HttpStatus.OK)
+                .status(HttpStatus.CREATED)
                 .data(convertToDto(task))
                 .build();
-        return ResponseHandler.create(customResponse, HttpStatus.OK);
+        return ResponseHandler.create(customResponse, HttpStatus.CREATED);
     }
 
     @DeleteMapping(path = "/{id}")
@@ -76,7 +76,7 @@ public class TaskController {
     private Task convertToEntity(TaskDto taskDto) {
         Task task = new Task();
         task.setDescription(taskDto.getDescription());
-        task.setCompleted(taskDto.isCompleted());
+        task.setCompleted(taskDto.getCompleted());
         return task;
     }
 
@@ -84,7 +84,7 @@ public class TaskController {
         TaskDto taskDto = new TaskDto();
         taskDto.setId(task.getId());
         taskDto.setDescription(task.getDescription());
-        taskDto.setCompleted(task.isCompleted());
+        taskDto.setCompleted(task.getCompleted());
         taskDto.setCreatedAt(task.getCreatedAt());
         taskDto.setUpdatedAt(task.getUpdatedAt());
         return taskDto;

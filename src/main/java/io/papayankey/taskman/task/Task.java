@@ -1,6 +1,5 @@
 package io.papayankey.taskman.task;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,7 +15,7 @@ public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int Id;
+    private Integer Id;
 
     @NotNull
     @Column(name = "description")
@@ -24,7 +23,7 @@ public class Task {
 
     @NotNull
     @Column(name = "completed")
-    private boolean completed;
+    private Boolean completed;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

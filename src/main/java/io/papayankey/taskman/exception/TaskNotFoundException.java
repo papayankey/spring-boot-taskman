@@ -1,4 +1,4 @@
-package io.papayankey.taskman.task.exceptions;
+package io.papayankey.taskman.exception;
 
 public class TaskNotFoundException extends RuntimeException {
 

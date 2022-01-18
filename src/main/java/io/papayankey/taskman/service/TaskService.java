@@ -3,8 +3,11 @@ package io.papayankey.taskman.service;
 import io.papayankey.taskman.dto.TaskDto;
 import io.papayankey.taskman.exception.TaskNotFoundException;
 import io.papayankey.taskman.model.TaskEntity;
+import io.papayankey.taskman.model.UserEntity;
 import io.papayankey.taskman.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.config.Task;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,8 +26,10 @@ public class TaskService {
     }
 
     public TaskDto createTask(TaskDto taskDto) {
-        TaskEntity taskEntity = taskRepository.save(toEntity(taskDto));
-        return toDto(taskEntity);
+        TaskEntity taskEntity = toEntity(taskDto);
+        taskEntity.setUserEntity(getCurrentUser());
+        TaskEntity savedTaskEntity = taskRepository.save(taskEntity);
+        return toDto(savedTaskEntity);
     }
 
     public TaskDto getTask(int id) {
@@ -48,6 +53,10 @@ public class TaskService {
 
     public void updateTask(int id, TaskDto taskDto) {
         taskRepository.findByIdAndUpdate(id, taskDto.getDescription(), taskDto.getStatus());
+    }
+
+    private UserEntity getCurrentUser() {
+        return (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
     private List<TaskDto> toListDto(List<TaskEntity> taskEntities) {

@@ -1,5 +1,5 @@
 ## Taskman
 
-An app to manage daily taskEntityEntities and increase productivity!
+An app to manage daily tasks and increase productivity!
 
-wip
+WIP

@@ -47,11 +47,7 @@ class TaskControllerTest {
 
     @Test
     public void shouldReturnCreatedTask() throws Exception {
-        TaskDto taskDto = TaskDto.builder()
-                .Id(2)
-                .description("go the gym")
-                .status(TaskStatus.ACTIVE)
-                .build();
+        TaskDto taskDto = TaskDto.builder().Id(2).description("go the gym").status(TaskStatus.ACTIVE).build();
 
         when(taskService.createTask(any(TaskDto.class))).thenReturn(taskDto);
 
@@ -66,10 +62,7 @@ class TaskControllerTest {
 
     @Test
     public void shouldUpdateTask() throws Exception {
-        TaskDto taskDto = TaskDto.builder()
-                .description("practice more testing")
-                .status(TaskStatus.ACTIVE)
-                .build();
+        TaskDto taskDto = TaskDto.builder().description("practice more testing").status(TaskStatus.ACTIVE).build();
 
         mockMvc.perform(put("/api/tasks/{id}", 1)
                         .content(objectMapper.writeValueAsString(taskDto))
@@ -81,11 +74,7 @@ class TaskControllerTest {
 
     @Test
     public void shouldDeleteTask() throws Exception {
-        TaskDto taskDto = TaskDto.builder()
-                .Id(5)
-                .description("read on spring cloud")
-                .status(TaskStatus.COMPLETED)
-                .build();
+        TaskDto taskDto = TaskDto.builder().Id(5).description("read on spring cloud").status(TaskStatus.COMPLETED).build();
 
         when(taskService.deleteTask(anyInt())).thenReturn(taskDto);
 

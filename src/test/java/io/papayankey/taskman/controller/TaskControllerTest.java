@@ -44,7 +44,7 @@ class TaskControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    public void shouldReturnCreatedTask() throws Exception {
+    void shouldReturnCreatedTask() throws Exception {
         TaskDto taskDto = TaskDto.builder().Id(2).description("go the gym").status(TaskStatus.ACTIVE).build();
 
         when(taskService.createTask(any(TaskDto.class))).thenReturn(taskDto);
@@ -59,7 +59,7 @@ class TaskControllerTest {
     }
 
     @Test
-    public void shouldUpdateTask() throws Exception {
+    void shouldUpdateTask() throws Exception {
         TaskDto taskDto = TaskDto.builder().description("practice more testing").status(TaskStatus.ACTIVE).build();
 
         mockMvc.perform(put("/api/tasks/{id}", 1)
@@ -71,7 +71,7 @@ class TaskControllerTest {
     }
 
     @Test
-    public void shouldDeleteTask() throws Exception {
+    void shouldDeleteTask() throws Exception {
         TaskDto taskDto = TaskDto.builder().Id(5).description("read on spring cloud").status(TaskStatus.COMPLETED).build();
 
         when(taskService.deleteTask(anyInt())).thenReturn(taskDto);
@@ -88,7 +88,7 @@ class TaskControllerTest {
     class getTasks {
         @Test
         @DisplayName("empty list given no task added")
-        public void shouldReturnEmptyList() throws Exception {
+        void shouldReturnEmptyList() throws Exception {
             mockMvc.perform(get("/api/tasks")
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
@@ -97,7 +97,7 @@ class TaskControllerTest {
 
         @Test
         @DisplayName("list of two tasks")
-        public void shouldReturnListOfTwoTasks() throws Exception {
+        void shouldReturnListOfTwoTasks() throws Exception {
             List<TaskDto> taskDtoList = List.of(
                     TaskDto.builder().Id(1).description("Check on at least one co-worker each day").status(TaskStatus.ACTIVE).build(),
                     TaskDto.builder().Id(2).description("Read on microsoft azure").status(TaskStatus.INACTIVE).build()

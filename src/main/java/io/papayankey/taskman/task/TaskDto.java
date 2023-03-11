@@ -1,11 +1,11 @@
-package io.papayankey.taskman.dto;
+package io.papayankey.taskman.task;
 
-import io.papayankey.taskman.enums.TaskStatus;
+import io.papayankey.taskman.task.TaskStatus;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.Builder;
 import lombok.Data;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 
 @Builder
 @Data

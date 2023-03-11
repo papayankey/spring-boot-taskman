@@ -1,10 +1,11 @@
 package io.papayankey.taskman.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.papayankey.taskman.dto.TaskDto;
-import io.papayankey.taskman.enums.TaskStatus;
+import io.papayankey.taskman.task.TaskController;
+import io.papayankey.taskman.task.TaskDto;
+import io.papayankey.taskman.task.TaskStatus;
 import io.papayankey.taskman.security.CustomUserDetailsService;
-import io.papayankey.taskman.service.TaskService;
+import io.papayankey.taskman.task.TaskService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -14,8 +15,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.web.util.UriBuilder;
 
 import java.util.List;
 

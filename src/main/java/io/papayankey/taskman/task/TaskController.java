@@ -1,7 +1,5 @@
-package io.papayankey.taskman.controller;
+package io.papayankey.taskman.task;
 
-import io.papayankey.taskman.dto.TaskDto;
-import io.papayankey.taskman.service.TaskService;
 import io.papayankey.taskman.util.CustomResponse;
 import io.papayankey.taskman.util.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,14 +10,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/api/tasks")
+@RequestMapping(path = "/api/v1/tasks")
 public class TaskController {
 
     @Autowired
     private TaskService taskService;
 
     @GetMapping
-    public ResponseEntity<CustomResponse> getTasks(@RequestParam(name = "status", required = false) String status) {
+    public ResponseEntity<CustomResponse> retrieveAll(@RequestParam(name = "status", required = false) String status) {
         List<TaskDto> taskDtos;
         if (status != null) taskDtos = taskService.getTasksByStatus(status);
         else taskDtos = taskService.getTasks();
@@ -33,7 +31,7 @@ public class TaskController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<CustomResponse> getTask(@PathVariable Integer id) {
+    public ResponseEntity<CustomResponse> retrieveOne(@PathVariable Integer id) {
         TaskDto taskDto = taskService.getTask(id);
         CustomResponse customResponse = CustomResponse.builder()
                 .message("OK")
@@ -44,7 +42,7 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<CustomResponse> createTask(@RequestBody TaskDto taskDto) {
+    public ResponseEntity<CustomResponse> create(@RequestBody TaskDto taskDto) {
         TaskDto savedTask = taskService.createTask(taskDto);
         CustomResponse customResponse = CustomResponse.builder()
                 .message("Task create successful")
@@ -55,7 +53,7 @@ public class TaskController {
     }
 
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<CustomResponse> deleteTask(@PathVariable Integer id) {
+    public ResponseEntity<CustomResponse> delete(@PathVariable Integer id) {
         TaskDto taskDto = taskService.deleteTask(id);
         CustomResponse customResponse = CustomResponse.builder()
                 .message("Task delete successful")
@@ -66,7 +64,7 @@ public class TaskController {
     }
 
     @PutMapping(path = "/{id}")
-    public ResponseEntity<CustomResponse> updateTask(@PathVariable Integer id, @RequestBody TaskDto taskDto) {
+    public ResponseEntity<CustomResponse> update(@PathVariable Integer id, @RequestBody TaskDto taskDto) {
         taskService.updateTask(id, taskDto);
         CustomResponse customResponse = CustomResponse.builder()
                 .status(HttpStatus.NO_CONTENT.value())

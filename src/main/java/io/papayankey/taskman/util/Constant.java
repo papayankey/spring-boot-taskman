@@ -1,4 +1,4 @@
-package io.papayankey.taskman.security.constant;
+package io.papayankey.taskman.util;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;

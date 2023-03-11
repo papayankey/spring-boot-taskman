@@ -1,12 +1,8 @@
-package io.papayankey.taskman.service;
+package io.papayankey.taskman.task;
 
-import io.papayankey.taskman.dto.TaskDto;
 import io.papayankey.taskman.exception.TaskNotFoundException;
-import io.papayankey.taskman.model.TaskEntity;
-import io.papayankey.taskman.model.UserEntity;
-import io.papayankey.taskman.repository.TaskRepository;
+import io.papayankey.taskman.user.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.config.Task;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +24,7 @@ public class TaskService {
     public TaskDto createTask(TaskDto taskDto) {
         TaskEntity taskEntity = toEntity(taskDto);
         taskEntity.setUserEntity(getCurrentUser());
+        taskEntity.setStatus(TaskStatus.INACTIVE);
         TaskEntity savedTaskEntity = taskRepository.save(taskEntity);
         return toDto(savedTaskEntity);
     }

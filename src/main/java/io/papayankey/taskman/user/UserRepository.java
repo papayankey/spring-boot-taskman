@@ -1,6 +1,5 @@
-package io.papayankey.taskman.repository;
+package io.papayankey.taskman.user;
 
-import io.papayankey.taskman.model.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,7 +1,7 @@
 package io.papayankey.taskman.security;
 
-import io.papayankey.taskman.model.UserEntity;
-import io.papayankey.taskman.repository.UserRepository;
+import io.papayankey.taskman.user.UserEntity;
+import io.papayankey.taskman.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

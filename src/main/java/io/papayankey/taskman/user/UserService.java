@@ -1,14 +1,12 @@
-package io.papayankey.taskman.service;
+package io.papayankey.taskman.user;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import io.papayankey.taskman.dto.request.LoginRequestDto;
-import io.papayankey.taskman.dto.request.RegisterRequestDto;
-import io.papayankey.taskman.dto.response.LoginResponseDto;
-import io.papayankey.taskman.dto.response.RegisterResponseDto;
+import io.papayankey.taskman.user.dto.request.LoginRequestDto;
+import io.papayankey.taskman.user.dto.request.RegisterRequestDto;
+import io.papayankey.taskman.user.dto.response.LoginResponseDto;
+import io.papayankey.taskman.user.dto.response.RegisterResponseDto;
 import io.papayankey.taskman.exception.UserExistException;
-import io.papayankey.taskman.model.UserEntity;
-import io.papayankey.taskman.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -19,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-import static io.papayankey.taskman.security.constant.Constant.*;
+import static io.papayankey.taskman.util.Constant.*;
 
 @Service
 public class UserService {

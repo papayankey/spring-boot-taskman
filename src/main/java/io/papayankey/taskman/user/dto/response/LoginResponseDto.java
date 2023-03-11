@@ -1,4 +1,4 @@
-package io.papayankey.taskman.dto.response;
+package io.papayankey.taskman.user.dto.response;
 
 import lombok.Builder;
 import lombok.Data;

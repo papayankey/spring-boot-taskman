@@ -1,10 +1,9 @@
-package io.papayankey.taskman.controller;
+package io.papayankey.taskman.user;
 
-import io.papayankey.taskman.dto.request.LoginRequestDto;
-import io.papayankey.taskman.dto.request.RegisterRequestDto;
-import io.papayankey.taskman.dto.response.LoginResponseDto;
-import io.papayankey.taskman.dto.response.RegisterResponseDto;
-import io.papayankey.taskman.service.UserService;
+import io.papayankey.taskman.user.dto.request.LoginRequestDto;
+import io.papayankey.taskman.user.dto.request.RegisterRequestDto;
+import io.papayankey.taskman.user.dto.response.LoginResponseDto;
+import io.papayankey.taskman.user.dto.response.RegisterResponseDto;
 import io.papayankey.taskman.util.CustomResponse;
 import io.papayankey.taskman.util.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -27,10 +27,10 @@ public class GlobalControllerAdvisor extends ResponseEntityExceptionHandler {
     @ExceptionHandler(UserExistException.class)
     public ResponseEntity<CustomResponse> handleUserExist(UserExistException exception, WebRequest request) {
         CustomResponse customResponse = CustomResponse.builder()
-                .status(HttpStatus.BAD_REQUEST.value())
+                .status(HttpStatus.CONFLICT.value())
                 .message(exception.getMessage())
                 .build();
-        return ResponseHandler.create(customResponse, HttpStatus.BAD_REQUEST);
+        return ResponseHandler.create(customResponse, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(BadCredentialsException.class)

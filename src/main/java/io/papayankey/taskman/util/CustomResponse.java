@@ -8,7 +8,6 @@ import java.util.Date;
 @Data
 @Builder
 public class CustomResponse {
-
     private Object data;
     private Object error;
     private int status;

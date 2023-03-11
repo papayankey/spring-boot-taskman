@@ -1,11 +1,11 @@
-package io.papayankey.taskman.model;
+package io.papayankey.taskman.task;
 
-import io.papayankey.taskman.enums.TaskStatus;
+import io.papayankey.taskman.user.UserEntity;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import java.util.Date;
 
 @Data

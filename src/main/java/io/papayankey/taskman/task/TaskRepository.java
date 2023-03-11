@@ -1,7 +1,5 @@
-package io.papayankey.taskman.repository;
+package io.papayankey.taskman.task;
 
-import io.papayankey.taskman.enums.TaskStatus;
-import io.papayankey.taskman.model.TaskEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

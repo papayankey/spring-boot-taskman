@@ -1,8 +1,12 @@
-## Basic
+debug: false
+
+server:
+  port: 8000
+
 spring:
   application:
     name: taskman
-    description: An app to manage daily taskEntity and increase production!
+    description: Manage daily tasks and increase production
   datasource:
     url: jdbc:h2:mem:testdb
     driverClassName: org.h2.Driver
@@ -11,20 +15,3 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     defer-datasource-initialization: true
-
-## Postgres
-#spring.datasource.url = ???
-#spring.datasource.username = ???
-#spring.datasource.password = ???
-#spring.datasource.port = ???
-#spring.jpa.hibernate.ddl-auto = ???
-
-## H2
-
-## Active Profile
-#spring.profiles.active = dev
-
-## JWT_SECRET
-
-## SONAR
-

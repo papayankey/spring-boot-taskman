@@ -26,16 +26,14 @@ public class SecurityConfiguration {
 
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
-        String AUTHENTICATION_ENDPOINT = "/auth/**";
-        String TASKS_ENDPOINT = "/api/tasks/**";
-
         return http
                 .cors().and()
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeHttpRequests(authorize -> {
-                    authorize.requestMatchers(HttpMethod.POST, AUTHENTICATION_ENDPOINT).permitAll();
-                    authorize.requestMatchers(TASKS_ENDPOINT).authenticated();
+                    authorize.requestMatchers(HttpMethod.GET, "/").permitAll();
+                    authorize.requestMatchers(HttpMethod.POST, "/auth/**").permitAll();
+                    authorize.requestMatchers("/api/v1/tasks/**").authenticated();
                     authorize.anyRequest().authenticated();
                 })
                 .addFilterBefore(JWTAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
@@ -44,10 +42,15 @@ public class SecurityConfiguration {
 
     @Bean
     public AuthenticationManager authenticationManager() {
+        return new ProviderManager(daoAuthenticationProvider());
+    }
+
+    @Bean
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setUserDetailsService(customUserDetailsService);
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
-        return new ProviderManager(daoAuthenticationProvider);
+        return daoAuthenticationProvider;
     }
 
     @Bean

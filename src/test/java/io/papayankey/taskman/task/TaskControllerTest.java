@@ -1,17 +1,16 @@
-package io.papayankey.taskman.controller;
+package io.papayankey.taskman.task;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.papayankey.taskman.task.TaskController;
-import io.papayankey.taskman.task.TaskDto;
-import io.papayankey.taskman.task.TaskStatus;
+import io.papayankey.taskman.config.SecurityConfiguration;
 import io.papayankey.taskman.security.CustomUserDetailsService;
-import io.papayankey.taskman.task.TaskService;
+import io.papayankey.taskman.util.JWTUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,11 +26,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Import(value = {SecurityConfiguration.class})
 @WebMvcTest(controllers = {TaskController.class})
-@WithMockUser(username = "ben")
+@WithMockUser
 class TaskControllerTest {
     @MockBean
     private CustomUserDetailsService customUserDetailsService;
+
+    @MockBean
+    private JWTUtil jwtUtil;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -48,7 +51,7 @@ class TaskControllerTest {
 
         when(taskService.createTask(any(TaskDto.class))).thenReturn(taskDto);
 
-        mockMvc.perform(post("/api/tasks")
+        mockMvc.perform(post("/api/v1/tasks")
                         .content(objectMapper.writeValueAsString(taskDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -61,7 +64,7 @@ class TaskControllerTest {
     void shouldUpdateTask() throws Exception {
         TaskDto taskDto = TaskDto.builder().description("practice more testing").status(TaskStatus.ACTIVE).build();
 
-        mockMvc.perform(put("/api/tasks/{id}", 1)
+        mockMvc.perform(put("/api/v1/tasks/{id}", 1)
                         .content(objectMapper.writeValueAsString(taskDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
@@ -75,7 +78,7 @@ class TaskControllerTest {
 
         when(taskService.deleteTask(anyInt())).thenReturn(taskDto);
 
-        mockMvc.perform(delete("/api/tasks/{id}", 5)
+        mockMvc.perform(delete("/api/v1/tasks/{id}", 5)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isAccepted())
                 .andExpect(jsonPath("$.message", is("Task delete successful")))
@@ -88,14 +91,14 @@ class TaskControllerTest {
         @Test
         @DisplayName("empty list given no task added")
         void shouldReturnEmptyList() throws Exception {
-            mockMvc.perform(get("/api/tasks")
+            mockMvc.perform(get("/api/v1/tasks")
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.data", empty()));
         }
 
         @Test
-        @DisplayName("list of two tasks")
+        @DisplayName("list of two tasks given two task added")
         void shouldReturnListOfTwoTasks() throws Exception {
             List<TaskDto> taskDtoList = List.of(
                     TaskDto.builder().Id(1).description("Check on at least one co-worker each day").status(TaskStatus.ACTIVE).build(),
@@ -104,7 +107,7 @@ class TaskControllerTest {
 
             when(taskService.getTasks()).thenReturn(taskDtoList);
 
-            mockMvc.perform(get("/api/tasks")
+            mockMvc.perform(get("/api/v1/tasks")
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.data.size()", is(2)));

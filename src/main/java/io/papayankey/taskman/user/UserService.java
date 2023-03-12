@@ -1,12 +1,11 @@
 package io.papayankey.taskman.user;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
+import io.papayankey.taskman.exception.UserExistException;
 import io.papayankey.taskman.user.dto.request.LoginRequestDto;
 import io.papayankey.taskman.user.dto.request.RegisterRequestDto;
 import io.papayankey.taskman.user.dto.response.LoginResponseDto;
 import io.papayankey.taskman.user.dto.response.RegisterResponseDto;
-import io.papayankey.taskman.exception.UserExistException;
+import io.papayankey.taskman.util.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -16,8 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-
-import static io.papayankey.taskman.util.Constant.*;
 
 @Service
 public class UserService {
@@ -30,6 +27,9 @@ public class UserService {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JWTUtil jwtUtil;
 
     public RegisterResponseDto register(RegisterRequestDto registerRequestDto) {
         Optional<UserEntity> optionalUser = userRepository.findByUsername(registerRequestDto.getUsername());
@@ -46,7 +46,7 @@ public class UserService {
         try {
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(), loginRequestDto.getPassword());
             authenticationManager.authenticate(authenticationToken);
-            String token = createToken(loginRequestDto);
+            String token = jwtUtil.createToken(loginRequestDto);
 
             return LoginResponseDto.builder()
                     .username(loginRequestDto.getUsername())
@@ -55,15 +55,6 @@ public class UserService {
         } catch (AuthenticationException exception) {
             throw new BadCredentialsException("Invalid username or password");
         }
-    }
-
-    private String createToken(LoginRequestDto loginRequestDto) {
-        Algorithm algorithm = Algorithm.HMAC256(JWT_SECRET);
-        return JWT.create()
-                .withSubject(loginRequestDto.getUsername())
-                .withIssuedAt(JWT_ISSUED)
-                .withExpiresAt(JWT_EXPIRATION)
-                .sign(algorithm);
     }
 
     private UserEntity toUserEntity(RegisterRequestDto registerRequestDto) {

@@ -24,22 +24,22 @@ public class UserController {
     @PostMapping(path = "/register")
     public ResponseEntity<CustomResponse> register(@RequestBody RegisterRequestDto registerRequestDto) {
         RegisterResponseDto registerResponseDto = userService.register(registerRequestDto);
-        CustomResponse customResponse = CustomResponse.builder()
-                .data(registerResponseDto)
-                .status(HttpStatus.CREATED.value())
-                .message("Registration successful")
-                .build();
-        return ResponseHandler.create(customResponse, HttpStatus.CREATED);
+        return ResponseHandler.create(CustomResponse.builder()
+                        .data(registerResponseDto)
+                        .status(HttpStatus.CREATED.value())
+                        .message("Registration successful")
+                        .build(),
+                HttpStatus.CREATED);
     }
 
     @PostMapping(path = "/login")
     public ResponseEntity<CustomResponse> login(@RequestBody LoginRequestDto loginRequestDto) {
         LoginResponseDto loginResponseDto = userService.login(loginRequestDto);
-        CustomResponse customResponse = CustomResponse.builder()
-                .status(HttpStatus.OK.value())
-                .message("Login successful")
-                .data(loginResponseDto)
-                .build();
-        return ResponseHandler.create(customResponse, HttpStatus.OK);
+        return ResponseHandler.create(CustomResponse.builder()
+                        .status(HttpStatus.OK.value())
+                        .message("Login successful")
+                        .data(loginResponseDto)
+                        .build(),
+                HttpStatus.OK);
     }
 }

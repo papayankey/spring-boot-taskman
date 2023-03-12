@@ -1,10 +1,7 @@
 package io.papayankey.taskman.security;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.papayankey.taskman.util.JWTUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,8 +17,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static io.papayankey.taskman.util.Constant.*;
-
 @Component
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
@@ -31,20 +26,20 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private JWTUtil jwtUtil;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String LOGIN_ENDPOINT = "/auth/login";
-        String REGISTER_ENDPOINT = "/auth/register";
-
         String path = request.getServletPath();
-        if (path.equals(LOGIN_ENDPOINT) || path.equals(REGISTER_ENDPOINT)) {
+        if (path.equals("/auth/login") || path.equals("/auth/register")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String token = parseJWT(request);
-        if (token != null && isNotAuthenticated() && validateToken(token)) {
-            String username = extractUsername(token);
+        String token = jwtUtil.parseJWT(request);
+        if (token != null && isNotAuthenticated() && jwtUtil.validateToken(token)) {
+            String username = jwtUtil.extractUsername(token);
             if (username != null) {
                 UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, new ArrayList<>());
@@ -59,28 +54,4 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     private boolean isNotAuthenticated() {
         return SecurityContextHolder.getContext().getAuthentication() == null;
     }
-
-    private String extractUsername(String token) {
-        return new JWT().decodeJwt(token).getSubject();
-    }
-
-    private String parseJWT(HttpServletRequest request) {
-        String authorizationHeader = request.getHeader(JWT_AUTHORIZATION_HEADER);
-        if (authorizationHeader != null && !authorizationHeader.isEmpty()) {
-            return authorizationHeader.substring(JWT_PREFIX.length());
-        }
-        return null;
-    }
-
-    private boolean validateToken(String token) {
-        Algorithm algorithm = Algorithm.HMAC256(JWT_SECRET);
-        JWTVerifier jwtVerifier = JWT.require(algorithm).build();
-        try {
-            jwtVerifier.verify(token);
-            return true;
-        } catch (JWTVerificationException exception) {
-            return false;
-        }
-    }
-
 }

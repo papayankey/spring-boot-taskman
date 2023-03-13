@@ -1,74 +1,87 @@
 package io.papayankey.taskman.task;
 
-import io.papayankey.taskman.util.CustomResponse;
+import io.papayankey.taskman.util.CustomServerResponse;
 import io.papayankey.taskman.util.ResponseHandler;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Validated
 @RestController
 @RequestMapping(path = "/api/v1/tasks")
 public class TaskController {
-
     @Autowired
     private TaskService taskService;
 
     @GetMapping
-    public ResponseEntity<CustomResponse> retrieveAll(@RequestParam(name = "status", required = false) String status) {
-        List<TaskDto> taskDtos;
-        if (status != null) taskDtos = taskService.getTasksByStatus(status);
-        else taskDtos = taskService.getTasks();
-
-        CustomResponse customResponse = CustomResponse.builder()
-                .message("OK")
+    public ResponseEntity<CustomServerResponse> findAll() {
+        List<TaskResponse> taskResponses = taskService.getTasks();
+        CustomServerResponse customServerResponse = CustomServerResponse.builder()
+                .title(HttpStatus.OK.name())
                 .status(HttpStatus.OK.value())
-                .data(taskDtos)
+                .data(taskResponses)
                 .build();
-        return ResponseHandler.create(customResponse, HttpStatus.OK);
+        return ResponseHandler.create(customServerResponse, HttpStatus.OK);
+    }
+
+    @GetMapping(params = "status")
+    public ResponseEntity<CustomServerResponse> findAllByStatus(@RequestParam @ValidTaskStatus String status) {
+        List<TaskResponse> taskResponses = taskService.getTasksByStatus(status);
+        CustomServerResponse customServerResponse = CustomServerResponse.builder()
+                .title(HttpStatus.OK.name())
+                .status(HttpStatus.OK.value())
+                .data(taskResponses)
+                .build();
+        return ResponseHandler.create(customServerResponse, HttpStatus.OK);
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<CustomResponse> retrieveOne(@PathVariable Integer id) {
-        TaskDto taskDto = taskService.getTask(id);
-        CustomResponse customResponse = CustomResponse.builder()
-                .message("OK")
+    public ResponseEntity<CustomServerResponse> findOne(@PathVariable Integer id) {
+        TaskResponse taskResponse = taskService.getTask(id);
+        CustomServerResponse customServerResponse = CustomServerResponse.builder()
+                .title(HttpStatus.OK.name())
                 .status(HttpStatus.OK.value())
-                .data(taskDto)
+                .data(taskResponse)
                 .build();
-        return ResponseHandler.create(customResponse, HttpStatus.OK);
+        return ResponseHandler.create(customServerResponse, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<CustomResponse> create(@RequestBody TaskDto taskDto) {
-        TaskDto savedTask = taskService.createTask(taskDto);
-        CustomResponse customResponse = CustomResponse.builder()
-                .message("Task create successful")
+    public ResponseEntity<CustomServerResponse> create(@RequestBody @Valid TaskRequest taskRequest) {
+        TaskResponse taskResponse = taskService.createTask(taskRequest);
+        CustomServerResponse customServerResponse = CustomServerResponse.builder()
                 .status(HttpStatus.CREATED.value())
-                .data(savedTask)
+                .title(HttpStatus.CREATED.name())
+                .detail("Task create successful")
+                .data(taskResponse)
                 .build();
-        return ResponseHandler.create(customResponse, HttpStatus.CREATED);
+        return ResponseHandler.create(customServerResponse, HttpStatus.CREATED);
     }
 
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<CustomResponse> delete(@PathVariable Integer id) {
-        TaskDto taskDto = taskService.deleteTask(id);
-        CustomResponse customResponse = CustomResponse.builder()
-                .message("Task delete successful")
+    public ResponseEntity<CustomServerResponse> delete(@PathVariable Integer id) {
+        TaskResponse taskResponse = taskService.deleteTask(id);
+        CustomServerResponse customServerResponse = CustomServerResponse.builder()
                 .status(HttpStatus.ACCEPTED.value())
-                .data(taskDto)
+                .title(HttpStatus.ACCEPTED.name())
+                .detail("Task delete successful")
+                .data(taskResponse)
                 .build();
-        return ResponseHandler.create(customResponse, HttpStatus.ACCEPTED);
+        return ResponseHandler.create(customServerResponse, HttpStatus.ACCEPTED);
     }
 
     @PutMapping(path = "/{id}")
-    public ResponseEntity<CustomResponse> update(@PathVariable Integer id, @RequestBody TaskDto taskDto) {
-        taskService.updateTask(id, taskDto);
-        CustomResponse customResponse = CustomResponse.builder()
+    public ResponseEntity<CustomServerResponse> update(@PathVariable Integer id, @RequestBody @Valid TaskRequest taskRequest) {
+        taskService.updateTask(id, taskRequest);
+        CustomServerResponse customServerResponse = CustomServerResponse.builder()
                 .status(HttpStatus.NO_CONTENT.value())
+                .title(HttpStatus.NOT_EXTENDED.name())
                 .build();
-        return ResponseHandler.create(customResponse, HttpStatus.NO_CONTENT);
+        return ResponseHandler.create(customServerResponse, HttpStatus.NO_CONTENT);
     }
 }

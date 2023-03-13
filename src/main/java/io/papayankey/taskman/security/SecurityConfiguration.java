@@ -1,14 +1,14 @@
-package io.papayankey.taskman.config;
+package io.papayankey.taskman.security;
 
-import io.papayankey.taskman.security.CustomUserDetailsService;
-import io.papayankey.taskman.security.JWTAuthenticationFilter;
+import io.papayankey.taskman.jwt.JWTAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,7 +25,7 @@ public class SecurityConfiguration {
     private CustomUserDetailsService customUserDetailsService;
 
     @Bean
-    protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
+    protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .cors().and()
                 .csrf().disable()
@@ -36,17 +36,18 @@ public class SecurityConfiguration {
                     authorize.requestMatchers("/api/v1/tasks/**").authenticated();
                     authorize.anyRequest().authenticated();
                 })
+                .authenticationProvider(daoAuthenticationProvider(customUserDetailsService))
                 .addFilterBefore(JWTAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager() {
-        return new ProviderManager(daoAuthenticationProvider());
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
-    public DaoAuthenticationProvider daoAuthenticationProvider() {
+    public AuthenticationProvider daoAuthenticationProvider(CustomUserDetailsService customUserDetailsService) {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setUserDetailsService(customUserDetailsService);
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());

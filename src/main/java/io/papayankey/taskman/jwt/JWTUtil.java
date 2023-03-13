@@ -1,10 +1,10 @@
-package io.papayankey.taskman.util;
+package io.papayankey.taskman.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import io.papayankey.taskman.user.dto.request.LoginRequestDto;
+import io.papayankey.taskman.user.UserLoginRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
 
@@ -20,10 +20,10 @@ public class JWTUtil {
     public static final Date JWT_EXPIRATION = Date.from(Instant.now().plus(15, ChronoUnit.MINUTES));
     public static final Date JWT_ISSUED = Date.from(Instant.now());
 
-    public String createToken(LoginRequestDto loginRequestDto) {
+    public String createToken(UserLoginRequest userLoginRequest) {
         Algorithm algorithm = Algorithm.HMAC256(JWT_SECRET);
         return JWT.create()
-                .withSubject(loginRequestDto.getUsername())
+                .withSubject(userLoginRequest.getUsername())
                 .withIssuedAt(JWT_ISSUED)
                 .withExpiresAt(JWT_EXPIRATION)
                 .sign(algorithm);

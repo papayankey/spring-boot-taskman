@@ -1,7 +1,7 @@
-package io.papayankey.taskman.security;
+package io.papayankey.taskman.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.papayankey.taskman.util.JWTUtil;
+import io.papayankey.taskman.security.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

@@ -2,76 +2,60 @@ package io.papayankey.taskman.task;
 
 import io.papayankey.taskman.exception.TaskNotFoundException;
 import io.papayankey.taskman.user.UserEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class TaskService {
 
     @Autowired
     private TaskRepository taskRepository;
 
-    public List<TaskDto> getTasks() {
+    @Autowired
+    private TaskMapper taskMapper;
+
+    public List<TaskResponse> getTasks() {
         List<TaskEntity> taskEntities = taskRepository.findAll();
-        return toListDto(taskEntities);
+        return toTaskResponseList(taskEntities);
     }
 
-    public TaskDto createTask(TaskDto taskDto) {
-        TaskEntity taskEntity = toEntity(taskDto);
-        taskEntity.setUserEntity(getCurrentUser());
-        taskEntity.setStatus(TaskStatus.INACTIVE);
+    public TaskResponse createTask(TaskRequest taskRequest) {
+        TaskEntity taskEntity = taskMapper.toTaskEntity(taskRequest);
+        UserEntity currentUser = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        taskEntity.setUserEntity(currentUser);
         TaskEntity savedTaskEntity = taskRepository.save(taskEntity);
-        return toDto(savedTaskEntity);
+        return taskMapper.toTaskResponse(savedTaskEntity);
     }
 
-    public TaskDto getTask(int id) {
+    public TaskResponse getTask(int id) {
         Optional<TaskEntity> optionalTask = taskRepository.findById(id);
-        if (optionalTask.isPresent()) {
-            return toDto(optionalTask.get());
-        }
-        throw new TaskNotFoundException(id);
+        TaskEntity taskEntity = optionalTask.orElseThrow(() -> new TaskNotFoundException(id));
+        return taskMapper.toTaskResponse(taskEntity);
     }
 
-    public List<TaskDto> getTasksByStatus(String status) {
-        List<TaskEntity> taskEntities = taskRepository.findByStatus(status);
-        return toListDto(taskEntities);
+    public List<TaskResponse> getTasksByStatus(String taskStatus) {
+        List<TaskEntity> taskEntities = taskRepository.findByStatus(TaskStatus.valueOf(taskStatus.toUpperCase()));
+        return toTaskResponseList(taskEntities);
     }
 
-    public TaskDto deleteTask(int id) {
-        TaskDto taskDto = getTask(id);
+    public TaskResponse deleteTask(int id) {
+        TaskResponse taskResponse = getTask(id);
         taskRepository.deleteById(id);
-        return taskDto;
+        return taskResponse;
     }
 
-    public void updateTask(int id, TaskDto taskDto) {
-        taskRepository.findByIdAndUpdate(id, taskDto.getDescription(), taskDto.getStatus());
+    public void updateTask(int id, TaskRequest taskRequest) {
+        TaskStatus taskStatus = TaskStatus.valueOf(taskRequest.getStatus().toUpperCase());
+        taskRepository.findByIdAndUpdate(id, taskRequest.getDescription(), taskStatus);
     }
 
-    private UserEntity getCurrentUser() {
-        return (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    }
-
-    private List<TaskDto> toListDto(List<TaskEntity> taskEntities) {
-        return taskEntities.stream().map(this::toDto).collect(Collectors.toList());
-    }
-
-    private TaskEntity toEntity(TaskDto taskDto) {
-        TaskEntity taskEntity = new TaskEntity();
-        taskEntity.setDescription(taskDto.getDescription());
-        taskEntity.setStatus(taskDto.getStatus());
-        return taskEntity;
-    }
-
-    private TaskDto toDto(TaskEntity taskEntity) {
-        return TaskDto.builder()
-                .Id(taskEntity.getId())
-                .description(taskEntity.getDescription())
-                .status(taskEntity.getStatus())
-                .build();
+    private List<TaskResponse> toTaskResponseList(List<TaskEntity> taskEntities) {
+        return taskEntities.stream().map(taskMapper::toTaskResponse).toList();
     }
 }

@@ -14,10 +14,9 @@ import java.util.Date;
 @Entity
 @Table(name = "tasks")
 public class TaskEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer Id;
+    private Integer id;
 
     private String description;
 
@@ -42,5 +41,4 @@ public class TaskEntity {
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private UserEntity userEntity;
-
 }

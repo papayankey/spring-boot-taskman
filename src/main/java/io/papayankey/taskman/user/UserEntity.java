@@ -23,11 +23,11 @@ public class UserEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int Id;
+    private int id;
 
     private String username;
-    private String firstName;
-    private String LastName;
+    private String firstname;
+    private String lastname;
     private String email;
     private String password;
     private Date createdAt;

@@ -9,8 +9,7 @@ import java.util.List;
 
 @Repository
 public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
-
-    List<TaskEntity> findByStatus(String status);
+    List<TaskEntity> findByStatus(TaskStatus status);
 
     @Query(value = "UPDATE tasks t SET t.description = :description, t.status = :status WHERE t.id = :id ", nativeQuery = true)
     void findByIdAndUpdate(
@@ -18,5 +17,4 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
             @Param("description") String description,
             @Param("status") TaskStatus status
     );
-
 }

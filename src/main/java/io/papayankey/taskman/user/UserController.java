@@ -1,10 +1,6 @@
 package io.papayankey.taskman.user;
 
-import io.papayankey.taskman.user.dto.request.LoginRequestDto;
-import io.papayankey.taskman.user.dto.request.RegisterRequestDto;
-import io.papayankey.taskman.user.dto.response.LoginResponseDto;
-import io.papayankey.taskman.user.dto.response.RegisterResponseDto;
-import io.papayankey.taskman.util.CustomResponse;
+import io.papayankey.taskman.util.CustomServerResponse;
 import io.papayankey.taskman.util.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,29 +13,30 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/auth")
 public class UserController {
-
     @Autowired
     private UserService userService;
 
     @PostMapping(path = "/register")
-    public ResponseEntity<CustomResponse> register(@RequestBody RegisterRequestDto registerRequestDto) {
-        RegisterResponseDto registerResponseDto = userService.register(registerRequestDto);
-        return ResponseHandler.create(CustomResponse.builder()
-                        .data(registerResponseDto)
-                        .status(HttpStatus.CREATED.value())
-                        .message("Registration successful")
-                        .build(),
-                HttpStatus.CREATED);
+    public ResponseEntity<CustomServerResponse> register(@RequestBody UserRegisterRequest userRegisterRequest) {
+        UserAuthenticationResponse userAuthenticationResponse = userService.register(userRegisterRequest);
+        CustomServerResponse responseData = CustomServerResponse.builder()
+                .data(userAuthenticationResponse)
+                .status(HttpStatus.CREATED.value())
+                .title(HttpStatus.CREATED.name())
+                .detail("Registration successful")
+                .build();
+        return ResponseHandler.create(responseData, HttpStatus.CREATED);
     }
 
     @PostMapping(path = "/login")
-    public ResponseEntity<CustomResponse> login(@RequestBody LoginRequestDto loginRequestDto) {
-        LoginResponseDto loginResponseDto = userService.login(loginRequestDto);
-        return ResponseHandler.create(CustomResponse.builder()
-                        .status(HttpStatus.OK.value())
-                        .message("Login successful")
-                        .data(loginResponseDto)
-                        .build(),
-                HttpStatus.OK);
+    public ResponseEntity<CustomServerResponse> login(@RequestBody UserLoginRequest userLoginRequest) {
+        UserAuthenticationResponse userAuthenticationResponse = userService.login(userLoginRequest);
+        CustomServerResponse responseData = CustomServerResponse.builder()
+                .status(HttpStatus.OK.value())
+                .title(HttpStatus.OK.name())
+                .detail("Login successful")
+                .data(userAuthenticationResponse)
+                .build();
+        return ResponseHandler.create(responseData, HttpStatus.OK);
     }
 }

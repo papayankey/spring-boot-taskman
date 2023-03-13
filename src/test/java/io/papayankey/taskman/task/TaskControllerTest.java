@@ -1,9 +1,9 @@
 package io.papayankey.taskman.task;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.papayankey.taskman.config.SecurityConfiguration;
+import io.papayankey.taskman.security.SecurityConfiguration;
 import io.papayankey.taskman.security.CustomUserDetailsService;
-import io.papayankey.taskman.util.JWTUtil;
+import io.papayankey.taskman.jwt.JWTUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -47,41 +47,42 @@ class TaskControllerTest {
 
     @Test
     void shouldReturnCreatedTask() throws Exception {
-        TaskDto taskDto = TaskDto.builder().Id(2).description("go the gym").status(TaskStatus.ACTIVE).build();
+        TaskRequest taskRequest = TaskRequest.builder().description("go the gym").status(TaskStatus.ACTIVE.name()).build();
+        TaskResponse taskResponse = TaskResponse.builder().id(1).description("go the gym").status(TaskStatus.ACTIVE.name()).build();
 
-        when(taskService.createTask(any(TaskDto.class))).thenReturn(taskDto);
+        when(taskService.createTask(any(TaskRequest.class))).thenReturn(taskResponse);
 
         mockMvc.perform(post("/api/v1/tasks")
-                        .content(objectMapper.writeValueAsString(taskDto))
+                        .content(objectMapper.writeValueAsString(taskRequest))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.message", is("Task create successful")))
-                .andExpect(jsonPath("$.data.id", is(2)));
+                .andExpect(jsonPath("$.detail", is("Task create successful")))
+                .andExpect(jsonPath("$.data.id", is(1)));
     }
 
     @Test
     void shouldUpdateTask() throws Exception {
-        TaskDto taskDto = TaskDto.builder().description("practice more testing").status(TaskStatus.ACTIVE).build();
+        TaskRequest taskRequest = TaskRequest.builder().description("practice more testing").status(TaskStatus.ACTIVE.name()).build();
 
         mockMvc.perform(put("/api/v1/tasks/{id}", 1)
-                        .content(objectMapper.writeValueAsString(taskDto))
+                        .content(objectMapper.writeValueAsString(taskRequest))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
-        verify(taskService, times(1)).updateTask(1, taskDto);
+        verify(taskService, times(1)).updateTask(1, taskRequest);
     }
 
     @Test
     void shouldDeleteTask() throws Exception {
-        TaskDto taskDto = TaskDto.builder().Id(5).description("read on spring cloud").status(TaskStatus.COMPLETED).build();
+        TaskResponse taskResponse = TaskResponse.builder().id(5).description("read on spring cloud").status(TaskStatus.COMPLETED.name()).build();
 
-        when(taskService.deleteTask(anyInt())).thenReturn(taskDto);
+        when(taskService.deleteTask(anyInt())).thenReturn(taskResponse);
 
         mockMvc.perform(delete("/api/v1/tasks/{id}", 5)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isAccepted())
-                .andExpect(jsonPath("$.message", is("Task delete successful")))
+                .andExpect(jsonPath("$.detail", is("Task delete successful")))
                 .andExpect(jsonPath("$.data.description", is("read on spring cloud")));
     }
 
@@ -100,12 +101,12 @@ class TaskControllerTest {
         @Test
         @DisplayName("list of two tasks given two task added")
         void shouldReturnListOfTwoTasks() throws Exception {
-            List<TaskDto> taskDtoList = List.of(
-                    TaskDto.builder().Id(1).description("Check on at least one co-worker each day").status(TaskStatus.ACTIVE).build(),
-                    TaskDto.builder().Id(2).description("Read on microsoft azure").status(TaskStatus.INACTIVE).build()
+            List<TaskResponse> taskResponseList = List.of(
+                    TaskResponse.builder().id(1).description("Check on at least one co-worker each day").status(TaskStatus.ACTIVE.name()).build(),
+                    TaskResponse.builder().id(2).description("Read on microsoft azure").status(TaskStatus.INACTIVE.name()).build()
             );
 
-            when(taskService.getTasks()).thenReturn(taskDtoList);
+            when(taskService.getTasks()).thenReturn(taskResponseList);
 
             mockMvc.perform(get("/api/v1/tasks")
                             .accept(MediaType.APPLICATION_JSON))

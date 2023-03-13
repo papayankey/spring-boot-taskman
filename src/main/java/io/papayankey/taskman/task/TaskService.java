@@ -22,7 +22,7 @@ public class TaskService {
 
     public List<TaskResponse> getTasks() {
         List<TaskEntity> taskEntities = taskRepository.findAll();
-        return toTaskResponseList(taskEntities);
+        return taskMapper.toTaskReponseList(taskEntities);
     }
 
     public TaskResponse createTask(TaskRequest taskRequest) {
@@ -41,7 +41,7 @@ public class TaskService {
 
     public List<TaskResponse> getTasksByStatus(String taskStatus) {
         List<TaskEntity> taskEntities = taskRepository.findByStatus(TaskStatus.valueOf(taskStatus.toUpperCase()));
-        return toTaskResponseList(taskEntities);
+        return taskMapper.toTaskReponseList(taskEntities);
     }
 
     public TaskResponse deleteTask(int id) {
@@ -53,9 +53,5 @@ public class TaskService {
     public void updateTask(int id, TaskRequest taskRequest) {
         TaskStatus taskStatus = TaskStatus.valueOf(taskRequest.getStatus().toUpperCase());
         taskRepository.findByIdAndUpdate(id, taskRequest.getDescription(), taskStatus);
-    }
-
-    private List<TaskResponse> toTaskResponseList(List<TaskEntity> taskEntities) {
-        return taskEntities.stream().map(taskMapper::toTaskResponse).toList();
     }
 }

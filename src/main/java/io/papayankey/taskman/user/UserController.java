@@ -18,9 +18,9 @@ public class UserController {
 
     @PostMapping(path = "/register")
     public ResponseEntity<CustomServerResponse> register(@RequestBody UserRegisterRequest userRegisterRequest) {
-        UserAuthenticationResponse userAuthenticationResponse = userServiceImpl.register(userRegisterRequest);
+        UserRegisterResponse userRegisterResponse = userServiceImpl.register(userRegisterRequest);
         CustomServerResponse responseData = CustomServerResponse.builder()
-                .data(userAuthenticationResponse)
+                .data(userRegisterResponse)
                 .status(HttpStatus.CREATED.value())
                 .title(HttpStatus.CREATED.name())
                 .detail("Registration successful")
@@ -30,12 +30,12 @@ public class UserController {
 
     @PostMapping(path = "/login")
     public ResponseEntity<CustomServerResponse> login(@RequestBody UserLoginRequest userLoginRequest) {
-        UserAuthenticationResponse userAuthenticationResponse = userServiceImpl.login(userLoginRequest);
+        UserLoginResponse userLoginResponse = userServiceImpl.login(userLoginRequest);
         CustomServerResponse responseData = CustomServerResponse.builder()
                 .status(HttpStatus.OK.value())
                 .title(HttpStatus.OK.name())
                 .detail("Login successful")
-                .data(userAuthenticationResponse)
+                .data(userLoginResponse)
                 .build();
         return ResponseHandler.create(responseData, HttpStatus.OK);
     }

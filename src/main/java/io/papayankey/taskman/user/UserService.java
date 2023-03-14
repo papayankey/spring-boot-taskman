@@ -1,7 +1,7 @@
 package io.papayankey.taskman.user;
 
 public interface UserService {
-    UserAuthenticationResponse register(UserRegisterRequest userRegisterRequest);
+    UserRegisterResponse register(UserRegisterRequest userRegisterRequest);
 
-    UserAuthenticationResponse login(UserLoginRequest userLoginRequest);
+    UserLoginResponse login(UserLoginRequest userLoginRequest);
 }

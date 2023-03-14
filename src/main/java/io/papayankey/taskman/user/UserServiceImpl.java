@@ -8,7 +8,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -19,9 +18,6 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
     private AuthenticationManager authenticationManager;
 
     @Autowired
@@ -30,7 +26,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserMapper userMapper;
 
-    public UserAuthenticationResponse register(UserRegisterRequest userRegisterRequest) {
+    public UserRegisterResponse register(UserRegisterRequest userRegisterRequest) {
         Optional<UserEntity> optionalUser = userRepository.findByUsername(userRegisterRequest.getUsername());
 
         if (optionalUser.isPresent()) {
@@ -38,19 +34,19 @@ public class UserServiceImpl implements UserService {
         }
 
         UserEntity userEntity = userRepository.save(userMapper.toUserEntity(userRegisterRequest));
-        return UserAuthenticationResponse.builder()
+        return UserRegisterResponse.builder()
                 .username(userEntity.getUsername())
                 .email(userEntity.getEmail())
                 .build();
     }
 
-    public UserAuthenticationResponse login(UserLoginRequest userLoginRequest) {
+    public UserLoginResponse login(UserLoginRequest userLoginRequest) {
         try {
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userLoginRequest.getUsername(), userLoginRequest.getPassword());
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
             UserEntity userEntity = (UserEntity) (authentication.getPrincipal());
 
-            return UserAuthenticationResponse.builder()
+            return UserLoginResponse.builder()
                     .username(userLoginRequest.getUsername())
                     .email(userEntity.getEmail())
                     .token(jwtUtil.createToken(userLoginRequest))

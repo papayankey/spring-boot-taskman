@@ -2,7 +2,7 @@ package io.papayankey.taskman.user;
 
 import io.papayankey.taskman.util.CustomServerResponse;
 import io.papayankey.taskman.util.ResponseHandler;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/auth")
+@AllArgsConstructor
 public class UserController {
-    @Autowired
     private UserServiceImpl userServiceImpl;
 
     @PostMapping(path = "/register")

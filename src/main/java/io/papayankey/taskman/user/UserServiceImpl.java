@@ -2,7 +2,7 @@ package io.papayankey.taskman.user;
 
 import io.papayankey.taskman.exception.UserExistException;
 import io.papayankey.taskman.jwt.JWTUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,17 +13,11 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
-    @Autowired
     private UserRepository userRepository;
-
-    @Autowired
     private AuthenticationManager authenticationManager;
-
-    @Autowired
     private JWTUtil jwtUtil;
-
-    @Autowired
     private UserMapper userMapper;
 
     public UserRegisterResponse register(UserRegisterRequest userRegisterRequest) {

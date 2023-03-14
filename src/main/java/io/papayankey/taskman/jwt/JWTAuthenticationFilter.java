@@ -1,12 +1,11 @@
 package io.papayankey.taskman.jwt;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.papayankey.taskman.security.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,15 +17,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 @Component
+@AllArgsConstructor
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
-
-    @Autowired
     private CustomUserDetailsService customUserDetailsService;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
     private JWTUtil jwtUtil;
 
     @Override

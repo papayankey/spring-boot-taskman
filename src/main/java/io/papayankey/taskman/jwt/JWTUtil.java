@@ -6,6 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import io.papayankey.taskman.user.UserLoginRequest;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -14,14 +15,16 @@ import java.util.Date;
 
 @Service
 public class JWTUtil {
-    public static final String JWT_PREFIX = "Bearer ";
-    public static final String JWT_AUTHORIZATION_HEADER = "Authorization";
-    public static final String JWT_SECRET = "super_jwt_secret";
-    public static final Date JWT_EXPIRATION = Date.from(Instant.now().plus(15, ChronoUnit.MINUTES));
-    public static final Date JWT_ISSUED = Date.from(Instant.now());
+    @Value("${jwt.secret}")
+    private String jwtSecret;
+
+    private static final String JWT_PREFIX = "Bearer ";
+    private static final String JWT_AUTHORIZATION_HEADER = "Authorization";
+    private static final Date JWT_EXPIRATION = Date.from(Instant.now().plus(15, ChronoUnit.MINUTES));
+    private static final Date JWT_ISSUED = Date.from(Instant.now());
 
     public String createToken(UserLoginRequest userLoginRequest) {
-        Algorithm algorithm = Algorithm.HMAC256(JWT_SECRET);
+        Algorithm algorithm = Algorithm.HMAC256(jwtSecret);
         return JWT.create()
                 .withSubject(userLoginRequest.getUsername())
                 .withIssuedAt(JWT_ISSUED)
@@ -42,7 +45,7 @@ public class JWTUtil {
     }
 
     public boolean validateToken(String token) {
-        Algorithm algorithm = Algorithm.HMAC256(JWT_SECRET);
+        Algorithm algorithm = Algorithm.HMAC256(jwtSecret);
         JWTVerifier jwtVerifier = JWT.require(algorithm).build();
         try {
             jwtVerifier.verify(token);

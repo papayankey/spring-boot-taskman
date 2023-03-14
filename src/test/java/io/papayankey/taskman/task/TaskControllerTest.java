@@ -1,9 +1,9 @@
 package io.papayankey.taskman.task;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.papayankey.taskman.security.SecurityConfiguration;
-import io.papayankey.taskman.security.CustomUserDetailsService;
 import io.papayankey.taskman.jwt.JWTUtil;
+import io.papayankey.taskman.security.CustomUserDetailsService;
+import io.papayankey.taskman.security.SecurityConfiguration;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -40,7 +40,7 @@ class TaskControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private TaskService taskService;
+    private TaskServiceImpl taskServiceImpl;
 
     @Autowired
     private MockMvc mockMvc;
@@ -50,7 +50,7 @@ class TaskControllerTest {
         TaskRequest taskRequest = TaskRequest.builder().description("go the gym").status(TaskStatus.ACTIVE.name()).build();
         TaskResponse taskResponse = TaskResponse.builder().id(1).description("go the gym").status(TaskStatus.ACTIVE.name()).build();
 
-        when(taskService.createTask(any(TaskRequest.class))).thenReturn(taskResponse);
+        when(taskServiceImpl.createTask(any(TaskRequest.class))).thenReturn(taskResponse);
 
         mockMvc.perform(post("/api/v1/tasks")
                         .content(objectMapper.writeValueAsString(taskRequest))
@@ -70,14 +70,14 @@ class TaskControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
-        verify(taskService, times(1)).updateTask(1, taskRequest);
+        verify(taskServiceImpl, times(1)).updateTask(1, taskRequest);
     }
 
     @Test
     void shouldDeleteTask() throws Exception {
         TaskResponse taskResponse = TaskResponse.builder().id(5).description("read on spring cloud").status(TaskStatus.COMPLETED.name()).build();
 
-        when(taskService.deleteTask(anyInt())).thenReturn(taskResponse);
+        when(taskServiceImpl.deleteTask(anyInt())).thenReturn(taskResponse);
 
         mockMvc.perform(delete("/api/v1/tasks/{id}", 5)
                         .accept(MediaType.APPLICATION_JSON))
@@ -106,7 +106,7 @@ class TaskControllerTest {
                     TaskResponse.builder().id(2).description("Read on microsoft azure").status(TaskStatus.INACTIVE.name()).build()
             );
 
-            when(taskService.getTasks()).thenReturn(taskResponseList);
+            when(taskServiceImpl.getTasks()).thenReturn(taskResponseList);
 
             mockMvc.perform(get("/api/v1/tasks")
                             .accept(MediaType.APPLICATION_JSON))

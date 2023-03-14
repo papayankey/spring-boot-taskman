@@ -16,11 +16,11 @@ import java.util.List;
 @RequestMapping(path = "/api/v1/tasks")
 public class TaskController {
     @Autowired
-    private TaskService taskService;
+    private TaskServiceImpl taskServiceImpl;
 
     @GetMapping
     public ResponseEntity<CustomServerResponse> findAll() {
-        List<TaskResponse> taskResponses = taskService.getTasks();
+        List<TaskResponse> taskResponses = taskServiceImpl.getTasks();
         CustomServerResponse customServerResponse = CustomServerResponse.builder()
                 .title(HttpStatus.OK.name())
                 .status(HttpStatus.OK.value())
@@ -31,7 +31,7 @@ public class TaskController {
 
     @GetMapping(params = "status")
     public ResponseEntity<CustomServerResponse> findAllByStatus(@RequestParam @ValidTaskStatus String status) {
-        List<TaskResponse> taskResponses = taskService.getTasksByStatus(status);
+        List<TaskResponse> taskResponses = taskServiceImpl.getTasksByStatus(status);
         CustomServerResponse customServerResponse = CustomServerResponse.builder()
                 .title(HttpStatus.OK.name())
                 .status(HttpStatus.OK.value())
@@ -42,7 +42,7 @@ public class TaskController {
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<CustomServerResponse> findOne(@PathVariable Integer id) {
-        TaskResponse taskResponse = taskService.getTask(id);
+        TaskResponse taskResponse = taskServiceImpl.getTask(id);
         CustomServerResponse customServerResponse = CustomServerResponse.builder()
                 .title(HttpStatus.OK.name())
                 .status(HttpStatus.OK.value())
@@ -53,7 +53,7 @@ public class TaskController {
 
     @PostMapping
     public ResponseEntity<CustomServerResponse> create(@RequestBody @Valid TaskRequest taskRequest) {
-        TaskResponse taskResponse = taskService.createTask(taskRequest);
+        TaskResponse taskResponse = taskServiceImpl.createTask(taskRequest);
         CustomServerResponse customServerResponse = CustomServerResponse.builder()
                 .status(HttpStatus.CREATED.value())
                 .title(HttpStatus.CREATED.name())
@@ -65,7 +65,7 @@ public class TaskController {
 
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<CustomServerResponse> delete(@PathVariable Integer id) {
-        TaskResponse taskResponse = taskService.deleteTask(id);
+        TaskResponse taskResponse = taskServiceImpl.deleteTask(id);
         CustomServerResponse customServerResponse = CustomServerResponse.builder()
                 .status(HttpStatus.ACCEPTED.value())
                 .title(HttpStatus.ACCEPTED.name())
@@ -77,7 +77,7 @@ public class TaskController {
 
     @PutMapping(path = "/{id}")
     public ResponseEntity<CustomServerResponse> update(@PathVariable Integer id, @RequestBody @Valid TaskRequest taskRequest) {
-        taskService.updateTask(id, taskRequest);
+        taskServiceImpl.updateTask(id, taskRequest);
         CustomServerResponse customServerResponse = CustomServerResponse.builder()
                 .status(HttpStatus.NO_CONTENT.value())
                 .title(HttpStatus.NOT_EXTENDED.name())

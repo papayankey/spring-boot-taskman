@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 public class UserController {
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
 
     @PostMapping(path = "/register")
     public ResponseEntity<CustomServerResponse> register(@RequestBody UserRegisterRequest userRegisterRequest) {
-        UserAuthenticationResponse userAuthenticationResponse = userService.register(userRegisterRequest);
+        UserAuthenticationResponse userAuthenticationResponse = userServiceImpl.register(userRegisterRequest);
         CustomServerResponse responseData = CustomServerResponse.builder()
                 .data(userAuthenticationResponse)
                 .status(HttpStatus.CREATED.value())
@@ -30,7 +30,7 @@ public class UserController {
 
     @PostMapping(path = "/login")
     public ResponseEntity<CustomServerResponse> login(@RequestBody UserLoginRequest userLoginRequest) {
-        UserAuthenticationResponse userAuthenticationResponse = userService.login(userLoginRequest);
+        UserAuthenticationResponse userAuthenticationResponse = userServiceImpl.login(userLoginRequest);
         CustomServerResponse responseData = CustomServerResponse.builder()
                 .status(HttpStatus.OK.value())
                 .title(HttpStatus.OK.name())

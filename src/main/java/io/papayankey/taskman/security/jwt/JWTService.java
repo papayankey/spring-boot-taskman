@@ -1,4 +1,4 @@
-package io.papayankey.taskman.jwt;
+package io.papayankey.taskman.security.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -7,6 +7,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import io.papayankey.taskman.user.UserLoginRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -14,7 +15,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 @Service
-public class JWTUtil {
+public class JWTService {
     @Value("${jwt.secret}")
     private String jwtSecret;
 
@@ -53,5 +54,9 @@ public class JWTUtil {
             return false;
         }
         return true;
+    }
+
+    public boolean isAuthenticated() {
+        return SecurityContextHolder.getContext().getAuthentication() != null;
     }
 }

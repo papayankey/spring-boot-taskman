@@ -1,4 +1,4 @@
-package io.papayankey.taskman.jwt;
+package io.papayankey.taskman.security.jwt;
 
 import io.papayankey.taskman.security.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 @AllArgsConstructor
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
     private CustomUserDetailsService customUserDetailsService;
-    private JWTUtil jwtUtil;
+    private JWTService jwtService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -30,9 +30,9 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        String token = jwtUtil.parseJWT(request);
-        if (token != null && isNotAuthenticated() && jwtUtil.validateToken(token)) {
-            String username = jwtUtil.extractUsername(token);
+        String token = jwtService.parseJWT(request);
+        if (token != null && !jwtService.isAuthenticated() && jwtService.validateToken(token)) {
+            String username = jwtService.extractUsername(token);
             if (username != null) {
                 UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, new ArrayList<>());
@@ -44,7 +44,5 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private boolean isNotAuthenticated() {
-        return SecurityContextHolder.getContext().getAuthentication() == null;
-    }
+
 }

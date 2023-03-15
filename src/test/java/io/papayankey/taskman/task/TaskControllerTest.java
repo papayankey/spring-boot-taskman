@@ -1,9 +1,9 @@
 package io.papayankey.taskman.task;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.papayankey.taskman.jwt.JWTUtil;
 import io.papayankey.taskman.security.CustomUserDetailsService;
 import io.papayankey.taskman.security.SecurityConfiguration;
+import io.papayankey.taskman.security.jwt.JWTService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -34,7 +34,7 @@ class TaskControllerTest {
     private CustomUserDetailsService customUserDetailsService;
 
     @MockBean
-    private JWTUtil jwtUtil;
+    private JWTService jwtService;
 
     @Autowired
     private ObjectMapper objectMapper;

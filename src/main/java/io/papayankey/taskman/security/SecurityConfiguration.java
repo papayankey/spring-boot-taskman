@@ -1,6 +1,6 @@
 package io.papayankey.taskman.security;
 
-import io.papayankey.taskman.jwt.JWTAuthenticationFilter;
+import io.papayankey.taskman.security.jwt.JWTAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

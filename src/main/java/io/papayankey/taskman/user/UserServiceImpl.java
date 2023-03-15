@@ -1,7 +1,7 @@
 package io.papayankey.taskman.user;
 
 import io.papayankey.taskman.exception.UserExistException;
-import io.papayankey.taskman.jwt.JWTUtil;
+import io.papayankey.taskman.security.jwt.JWTService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -17,7 +17,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     private AuthenticationManager authenticationManager;
-    private JWTUtil jwtUtil;
+    private JWTService jwtService;
     private UserMapper userMapper;
 
     public UserRegisterResponse register(UserRegisterRequest userRegisterRequest) {
@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
             return UserLoginResponse.builder()
                     .username(userLoginRequest.getUsername())
                     .email(userEntity.getEmail())
-                    .token(jwtUtil.createToken(userLoginRequest))
+                    .token(jwtService.createToken(userLoginRequest))
                     .build();
         } catch (AuthenticationException exception) {
             throw new BadCredentialsException("Invalid username or password");

@@ -41,8 +41,8 @@ public class TaskController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<CustomServerResponse> findOne(@PathVariable Integer id) {
-        TaskResponse taskResponse = taskServiceImpl.getTask(id);
+    public ResponseEntity<CustomServerResponse> findOne(@PathVariable @ValidId String id) {
+        TaskResponse taskResponse = taskServiceImpl.getTask(Integer.parseInt(id));
         CustomServerResponse customServerResponse = CustomServerResponse.builder()
                 .title(HttpStatus.OK.name())
                 .status(HttpStatus.OK.value())
@@ -52,7 +52,7 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<CustomServerResponse> create(@RequestBody @Valid TaskRequest taskRequest) {
+    public ResponseEntity<CustomServerResponse> create(@RequestBody @ValidId TaskRequest taskRequest) {
         TaskResponse taskResponse = taskServiceImpl.createTask(taskRequest);
         CustomServerResponse customServerResponse = CustomServerResponse.builder()
                 .status(HttpStatus.CREATED.value())
@@ -64,8 +64,8 @@ public class TaskController {
     }
 
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<CustomServerResponse> delete(@PathVariable Integer id) {
-        TaskResponse taskResponse = taskServiceImpl.deleteTask(id);
+    public ResponseEntity<CustomServerResponse> delete(@PathVariable @ValidId String id) {
+        TaskResponse taskResponse = taskServiceImpl.deleteTask(Integer.parseInt(id));
         CustomServerResponse customServerResponse = CustomServerResponse.builder()
                 .status(HttpStatus.ACCEPTED.value())
                 .title(HttpStatus.ACCEPTED.name())
@@ -76,8 +76,8 @@ public class TaskController {
     }
 
     @PutMapping(path = "/{id}")
-    public ResponseEntity<CustomServerResponse> update(@PathVariable Integer id, @RequestBody @Valid TaskRequest taskRequest) {
-        taskServiceImpl.updateTask(id, taskRequest);
+    public ResponseEntity<CustomServerResponse> update(@PathVariable @ValidId String id, @RequestBody @Valid TaskRequest taskRequest) {
+        taskServiceImpl.updateTask(Integer.parseInt(id), taskRequest);
         CustomServerResponse customServerResponse = CustomServerResponse.builder()
                 .status(HttpStatus.NO_CONTENT.value())
                 .title(HttpStatus.NOT_EXTENDED.name())

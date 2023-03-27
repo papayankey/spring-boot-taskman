@@ -2,7 +2,7 @@ package io.papayankey.taskman.task;
 
 import io.papayankey.taskman.exception.TaskNotFoundException;
 import io.papayankey.taskman.user.UserEntity;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -12,10 +12,10 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
-    private TaskRepository taskRepository;
-    private TaskMapper taskMapper;
+    private final TaskRepository taskRepository;
+    private final TaskMapper taskMapper;
 
     public List<TaskResponse> getTasks() {
         List<TaskEntity> taskEntities = taskRepository.findAll();
@@ -48,6 +48,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     public void updateTask(int id, TaskRequest taskRequest) {
+//        TaskResponse taskResponse = getTask(id);
         TaskStatus taskStatus = TaskStatus.valueOf(taskRequest.getStatus().toUpperCase());
         taskRepository.findByIdAndUpdate(id, taskRequest.getDescription(), taskStatus);
     }

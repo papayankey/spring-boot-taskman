@@ -1,11 +1,11 @@
-package io.papayankey.taskman.user;
+package io.papayankey.taskman.authentication;
 
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
-public class UserLoginResponse {
+public class AuthenticationLoginResponse {
     private String username;
     private String email;
     private String token;

@@ -4,7 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import io.papayankey.taskman.user.UserLoginRequest;
+import io.papayankey.taskman.authentication.AuthenticationLoginRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,10 +24,10 @@ public class JWTService {
     private static final Date JWT_EXPIRATION = Date.from(Instant.now().plus(15, ChronoUnit.MINUTES));
     private static final Date JWT_ISSUED = Date.from(Instant.now());
 
-    public String createToken(UserLoginRequest userLoginRequest) {
+    public String createToken(AuthenticationLoginRequest authenticationLoginRequest) {
         Algorithm algorithm = Algorithm.HMAC256(jwtSecret);
         return JWT.create()
-                .withSubject(userLoginRequest.getUsername())
+                .withSubject(authenticationLoginRequest.getUsername())
                 .withIssuedAt(JWT_ISSUED)
                 .withExpiresAt(JWT_EXPIRATION)
                 .sign(algorithm);

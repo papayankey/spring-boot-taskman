@@ -52,7 +52,7 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<CustomServerResponse> create(@RequestBody @ValidId TaskRequest taskRequest) {
+    public ResponseEntity<CustomServerResponse> create(@RequestBody @Valid TaskRequest taskRequest) {
         TaskResponse taskResponse = taskServiceImpl.createTask(taskRequest);
         CustomServerResponse customServerResponse = CustomServerResponse.builder()
                 .status(HttpStatus.CREATED.value())

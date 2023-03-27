@@ -1,4 +1,4 @@
-package io.papayankey.taskman.user;
+package io.papayankey.taskman.authentication;
 
 import io.papayankey.taskman.util.CustomServerResponse;
 import io.papayankey.taskman.util.ResponseHandler;
@@ -13,14 +13,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-public class UserController {
-    private final UserServiceImpl userServiceImpl;
+public class AuthenticationController {
+    private final AuthenticationServiceImpl authenticationServiceImpl;
 
     @PostMapping(path = "/register")
-    public ResponseEntity<CustomServerResponse> register(@RequestBody UserRegisterRequest userRegisterRequest) {
-        UserRegisterResponse userRegisterResponse = userServiceImpl.register(userRegisterRequest);
+    public ResponseEntity<CustomServerResponse> register(@RequestBody AuthenticationRegisterRequest authenticationRegisterRequest) {
+        AuthenticationRegisterResponse authenticationRegisterResponse = authenticationServiceImpl.register(authenticationRegisterRequest);
         CustomServerResponse responseData = CustomServerResponse.builder()
-                .data(userRegisterResponse)
+                .data(authenticationRegisterResponse)
                 .status(HttpStatus.CREATED.value())
                 .title(HttpStatus.CREATED.name())
                 .detail("Registration successful")
@@ -29,13 +29,13 @@ public class UserController {
     }
 
     @PostMapping(path = "/login")
-    public ResponseEntity<CustomServerResponse> login(@RequestBody UserLoginRequest userLoginRequest) {
-        UserLoginResponse userLoginResponse = userServiceImpl.login(userLoginRequest);
+    public ResponseEntity<CustomServerResponse> login(@RequestBody AuthenticationLoginRequest authenticationLoginRequest) {
+        AuthenticationLoginResponse authenticationLoginResponse = authenticationServiceImpl.login(authenticationLoginRequest);
         CustomServerResponse responseData = CustomServerResponse.builder()
                 .status(HttpStatus.OK.value())
                 .title(HttpStatus.OK.name())
                 .detail("Login successful")
-                .data(userLoginResponse)
+                .data(authenticationLoginResponse)
                 .build();
         return ResponseHandler.create(responseData, HttpStatus.OK);
     }
